@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #000000;
+  --card: #ffffff;
+  --border: #e5e5e5;
+  --accent-yellow: #facc15;
+  --text-primary: #171717;
+  --text-secondary: #737373;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -webkit-font-smoothing;
+  background-color: var(--background);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* Ensure typography works on white cards */
+h1,
+h2,
+h3,
+h4,
+th {
+  color: #000000;
+}
+
+p,
+td {
+  color: #404040;
+}
+
+/* Remove AI-style glows and animations */
+.animate-in {
+  animation: none !important;
+}
+
+.shadow-lg {
+  box-shadow: none !important;
+}
+
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f3f;
+}
+
+/* Custom classes for the new theme */
+.card-flat {
+  @apply bg-white border border-dark-border rounded-2xl;
+}
+
+.input-flat {
+  @apply bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-neutral-900 focus:border-accent-yellow outline-none transition-colors;
+}
