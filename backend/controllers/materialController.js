@@ -3,7 +3,16 @@ import { generateQRCode } from '../services/qrService.js';
 
 export const createMaterial = async (req, res) => {
     try {
-        const { materialId, heatNumber, supplier, grade, certificateFile } = req.body;
+        const {
+            materialId,
+            heatNumber,
+            supplier,
+            grade,
+            certificateFile,
+            chemicalComp,
+            mechanicalProp,
+            dateReceived
+        } = req.body;
         const qrCodePath = await generateQRCode(materialId);
         const material = await prisma.material.create({
             data: {
@@ -12,6 +21,9 @@ export const createMaterial = async (req, res) => {
                 supplier,
                 grade,
                 certificateFile,
+                chemicalComp,
+                mechanicalProp,
+                dateReceived: dateReceived ? new Date(dateReceived) : new Date(),
                 qrCode: qrCodePath
             }
         });

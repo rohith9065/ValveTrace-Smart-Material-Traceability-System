@@ -22,7 +22,10 @@ model Material {
   supplier         String
   grade            String
   qrCode           String?
-  certificateFile  String?
+  certificateFile  String?     // Mill Test Report (MTR) Link
+  chemicalComp     String?     // Chemical Composition data
+  mechanicalProp   String?     // Mechanical Properties data
+  dateReceived     DateTime?   @default(now())
   createdAt        DateTime    @default(now())
   components       Component[]
 }
@@ -40,15 +43,23 @@ model Component {
 }
 
 model Valve {
-  id            String          @id @default(uuid())
-  valveId       String          @unique // e.g., VLV-2026-001
-  serialNumber  String          @unique
-  qrCode        String?
-  assemblyStatus String         @default("Pending") // Pending, Assembled, Tested, Packed, Dispatched
-  createdAt     DateTime        @default(now())
-  components    ValveComponent[]
-  testReports   TestReport[]
-  logs          ProcessLog[]
+  id               String          @id @default(uuid())
+  valveId          String          @unique // e.g., VLV-2026-001
+  serialNumber     String          @unique
+  qrCode           String?
+  assemblyStatus   String          @default("Pending") // Pending, Assembled, Tested, Packed, Dispatched
+  
+  // Dispatch Info
+  customerName     String?
+  poNumber         String?
+  shipmentDate     DateTime?
+  destination      String?
+  batchNumber      String?
+
+  createdAt        DateTime        @default(now())
+  components       ValveComponent[]
+  testReports      TestReport[]
+  logs             ProcessLog[]
 }
 
 model ValveComponent {
@@ -72,12 +83,16 @@ model ProcessLog {
 }
 
 model TestReport {
-  id           String   @id @default(uuid())
-  valveId      String
-  valve        Valve    @relation(fields: [valveId], references: [id])
-  pressureTest String
-  leakTest     String
-  result       String
-  reportFile   String?
-  createdAt    DateTime @default(now())
+  id               String   @id @default(uuid())
+  valveId          String
+  valve            Valve    @relation(fields: [valveId], references: [id])
+  hydroTest        String?  // Pass/Fail or PSI
+  pressureTest     String?
+  leakTest         String?
+  ndtInspection    String?  // Non-Destructive Testing
+  visualInspection String?
+  inspector        String?
+  result           String   // Overall Result
+  reportFile       String?
+  createdAt        DateTime @default(now())
 }

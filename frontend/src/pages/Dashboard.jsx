@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Cpu, HardDrive, Activity, Calendar, Download, TrendingUp, ArrowUpRight } from 'lucide-react';
+import {
+    Box,
+    Cpu,
+    HardDrive,
+    Activity,
+    Calendar,
+    Download,
+    TrendingUp,
+    ArrowUpRight,
+    Truck,
+    ShieldCheck,
+    CheckCircle2,
+    Factory
+} from 'lucide-react';
 import axios from 'axios';
 
-const StatCard = ({ label, value, subtext, icon, trend }) => (
-    <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+const StatCard = ({ label, value, subtext, icon, trend, colorClass = "blue" }) => (
+    <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow group">
         <div className="flex justify-between items-start mb-4">
-            <div className="p-2 bg-slate-50 rounded-lg text-slate-500 border border-slate-100">
+            <div className={`p-2 bg-${colorClass}-50 rounded-lg text-${colorClass}-600 border border-${colorClass}-100 transition-colors group-hover:bg-${colorClass}-600 group-hover:text-white`}>
                 {icon}
             </div>
             {trend && (
@@ -19,15 +32,20 @@ const StatCard = ({ label, value, subtext, icon, trend }) => (
             <h3 className="text-slate-500 font-semibold text-xs uppercase tracking-wider">{label}</h3>
             <div className="flex items-baseline gap-2 mt-1">
                 <h2 className="text-3xl font-bold text-slate-900 tracking-tight">{value}</h2>
-                <span className="text-[10px] font-medium text-slate-400">Total Units</span>
+                {subtext && <span className="text-[10px] font-medium text-slate-400">{subtext}</span>}
             </div>
-            {subtext && <p className="text-[10px] font-medium text-slate-400 mt-2 italic">{subtext}</p>}
         </div>
     </div>
 );
 
 const Dashboard = () => {
-    const [stats, setStats] = useState({ materials: 0, components: 0, valves: 0, logs: 0 });
+    const [stats, setStats] = useState({
+        materials: 0,
+        components: 0,
+        valves: 0,
+        dispatched: 0,
+        tested: 0
+    });
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -41,7 +59,8 @@ const Dashboard = () => {
                     materials: m.data.length,
                     components: c.data.length,
                     valves: v.data.length,
-                    logs: 124
+                    dispatched: v.data.filter(x => x.assemblyStatus === 'Dispatched').length,
+                    tested: v.data.filter(x => x.assemblyStatus === 'Tested' || x.assemblyStatus === 'Dispatched').length
                 });
             } catch (err) {
                 console.error(err);
@@ -56,105 +75,123 @@ const Dashboard = () => {
                 <div>
                     <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">System Live</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Operational Telemetry Live</span>
                     </div>
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Industrial Overview</h2>
-                    <p className="text-slate-500 mt-1 text-sm font-medium">Real-time telemetry and production floor status</p>
+                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Factory Control Center</h2>
+                    <p className="text-slate-500 mt-1 text-sm font-medium">Real-time oversight of materials, manufacturing and distribution</p>
                 </div>
                 <div className="flex gap-2">
                     <button className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors shadow-sm">
-                        <Calendar size={14} /> FILTER PERIOD
+                        <ShieldCheck size={14} /> COMPLIANCE MODE
                     </button>
-                    <button className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
-                        <Download size={14} /> EXPORT ANALYTICS
+                    <button className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-black transition-colors shadow-lg shadow-slate-200">
+                        <Download size={14} /> EXPORT AUDIT LOG
                     </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <StatCard
-                    label="Raw Materials"
+                    label="Materials"
                     value={stats.materials}
                     icon={<Box size={20} />}
-                    trend="+12.3%"
-                    subtext="Last updated 14 mins ago"
+                    colorClass="blue"
+                    subtext="Heat Batches"
                 />
                 <StatCard
-                    label="WIP Components"
+                    label="Machining"
                     value={stats.components}
                     icon={<Cpu size={20} />}
-                    trend="+3.1%"
-                    subtext="Processing in Stage 2/4"
+                    colorClass="purple"
+                    subtext="Part Serials"
                 />
                 <StatCard
-                    label="Finished Valves"
+                    label="Assembled"
                     value={stats.valves}
-                    icon={<HardDrive size={20} />}
-                    trend="+8.5%"
-                    subtext="Ready for final inspection"
+                    icon={<Factory size={20} />}
+                    colorClass="amber"
+                    subtext="Valve Units"
+                />
+                <StatCard
+                    label="Verified"
+                    value={stats.tested}
+                    icon={<CheckCircle2 size={20} />}
+                    colorClass="emerald"
+                    trend="+14%"
+                    subtext="QC Approved"
+                />
+                <StatCard
+                    label="Dispatched"
+                    value={stats.dispatched}
+                    icon={<Truck size={20} />}
+                    colorClass="slate"
+                    subtext="Shipped Out"
                 />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Production Velocity Card */}
                 <div className="bg-white border border-slate-200 rounded-2xl p-7 flex flex-col shadow-sm">
                     <div className="flex justify-between items-center mb-10">
                         <div>
-                            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Production Output</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Monthly Units Velocity</p>
+                            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Manufacturing Pipeline</h3>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Units Output vs Target</p>
                         </div>
-                        <select className="bg-slate-50 border border-slate-200 text-[10px] font-bold text-slate-500 px-3 py-1.5 rounded-lg outline-none cursor-pointer">
-                            <option>Last 30 Days</option>
-                            <option>Last 90 Days</option>
-                        </select>
+                        <div className="flex bg-slate-50 p-1 rounded-lg border border-slate-100">
+                            <button className="px-3 py-1 text-[10px] font-bold bg-white shadow-sm rounded-md text-slate-900">Weekly</button>
+                            <button className="px-3 py-1 text-[10px] font-bold text-slate-400">Monthly</button>
+                        </div>
                     </div>
 
-                    <div className="flex items-end justify-between h-44 gap-3">
+                    <div className="flex items-end justify-between h-56 gap-3">
                         {[40, 65, 45, 90, 75, 55, 80, 110, 85, 100, 70, 95].map((h, i) => (
                             <div key={i} className="flex-1 bg-slate-50 relative group rounded-t-lg h-full">
                                 <div
-                                    className="absolute bottom-0 left-0 w-full bg-blue-500/80 group-hover:bg-blue-600 transition-all duration-300 rounded-t-md cursor-pointer shadow-sm"
+                                    className={`absolute bottom-0 left-0 w-full ${i > 8 ? 'bg-blue-600' : 'bg-slate-300'} group-hover:bg-blue-500 transition-all duration-300 rounded-t-lg cursor-pointer`}
                                     style={{ height: `${(h / 120) * 100}%` }}
                                 >
-                                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                                        {h} Units
+                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] font-bold px-2 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-xl">
+                                        {h} units • WK {i + 1}
                                     </div>
+                                </div>
+                                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-black text-slate-300 uppercase tracking-widest">
+                                    W{i + 1}
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className="flex justify-between text-[10px] text-slate-400 font-bold uppercase mt-6 tracking-widest border-t border-slate-50 pt-4 px-2">
-                        <span>WK 01</span>
-                        <span>WK 02</span>
-                        <span>WK 03</span>
-                        <span>WK 04</span>
-                    </div>
                 </div>
 
+                {/* Audit Trail Card */}
                 <div className="bg-white border border-slate-200 rounded-2xl p-7 flex flex-col shadow-sm">
                     <div className="flex justify-between items-center mb-8">
                         <div>
-                            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Operational Log</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">System Audit Trail</p>
+                            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Traceability Loop</h3>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">System-Wide Verification Log</p>
                         </div>
                         <button className="text-[10px] font-bold text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-all uppercase tracking-widest flex items-center gap-1">
-                            Live Monitor <ArrowUpRight size={14} />
+                            Full Registry <ArrowUpRight size={14} />
                         </button>
                     </div>
 
-                    <div className="space-y-5 flex-1 overflow-auto pr-2">
+                    <div className="space-y-2 flex-1 overflow-auto pr-2">
                         {[
-                            { title: 'Valve VLV-PR-02 Verified', stage: 'Testing', time: '2m' },
-                            { title: 'Material Batch #881 Received', stage: 'Inbound', time: '14m' },
-                            { title: 'Stem Component Machined', stage: 'Stage 2', time: '41m' },
-                            { title: 'Unit QA Certification Done', stage: 'Inspection', time: '1h' },
+                            { title: 'Valve VLV-PR-02 Dispatched', stage: 'Distribution', time: '2m', color: 'slate' },
+                            { title: 'Pressure Test #981 Passed', stage: 'Quality', time: '14m', color: 'emerald' },
+                            { title: 'Material Batch #HT-552 Registry', stage: 'Material', time: '41m', color: 'blue' },
+                            { title: 'New Unit B-102 Assembled', stage: 'Assembly', time: '1h', color: 'amber' },
+                            { title: 'Stem Part #SN-881 Machined', stage: 'Machining', time: '3h', color: 'purple' },
                         ].map((item, i) => (
-                            <div key={i} className="flex items-center gap-4 group cursor-pointer p-2 rounded-xl hover:bg-slate-50 transition-colors">
-                                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-transform">
+                            <div key={i} className="flex items-center gap-4 group cursor-pointer p-3 rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100">
+                                <div className={`w-10 h-10 rounded-xl bg-${item.color}-50 border border-${item.color}-100 flex items-center justify-center text-${item.color}-600 group-hover:scale-110 transition-transform`}>
                                     <Activity size={18} />
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-sm font-bold text-slate-900 leading-tight">{item.title}</p>
-                                    <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-wide">STAGE: {item.stage}</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <div className={`w-1.5 h-1.5 rounded-full bg-${item.color}-400`}></div>
+                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">{item.stage}</p>
+                                    </div>
                                 </div>
                                 <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest group-hover:text-slate-500">{item.time} ago</p>
                             </div>

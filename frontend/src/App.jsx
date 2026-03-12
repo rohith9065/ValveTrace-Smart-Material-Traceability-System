@@ -7,6 +7,8 @@ import Components from './pages/Components';
 import Valves from './pages/Valves';
 import ProcessTracking from './pages/ProcessTracking';
 import Traceability from './pages/Traceability';
+import QualityControl from './pages/QualityControl';
+import Dispatch from './pages/Dispatch';
 
 function App() {
     return (
@@ -19,6 +21,9 @@ function App() {
                     <Route path="valves" element={<Valves />} />
                     <Route path="process" element={<ProcessTracking />} />
                     <Route path="trace" element={<Traceability />} />
+                    <Route path="quality" element={<QualityControl />} />
+                    <Route path="dispatch" element={<Dispatch />} />
+                    <Route path="search" element={<Traceability />} />
                 </Route>
             </Routes>
         </BrowserRouter>
