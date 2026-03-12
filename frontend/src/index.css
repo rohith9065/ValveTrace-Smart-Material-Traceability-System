@@ -1,74 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #000000;
-  --card: #ffffff;
-  --border: #e5e5e5;
-  --accent-yellow: #facc15;
-  --text-primary: #171717;
-  --text-secondary: #737373;
+  /* Industrial Palette */
+  --bg-app: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+
+  --accent-primary: #2563eb;
+  /* Professional Blue */
+  --accent-secondary: #0ea5e9;
+
+  --status-ready: #10b981;
+  --status-pending: #f59e0b;
+  --status-alert: #ef4444;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
 }
 
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -webkit-font-smoothing;
-  background-color: var(--background);
+  background-color: var(--bg-app);
   color: var(--text-primary);
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ensure typography works on white cards */
-h1,
-h2,
-h3,
-h4,
-th {
-  color: #000000;
+code,
+.mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
-p,
-td {
-  color: #404040;
-}
+/* Custom UI Components */
+@layer components {
+  .glass-card {
+    @apply bg-white border border-slate-200/60 shadow-sm transition-all duration-200;
+  }
 
-/* Remove AI-style glows and animations */
-.animate-in {
-  animation: none !important;
-}
+  .nav-link-active {
+    @apply bg-blue-50 text-blue-600 font-semibold;
+  }
 
-.shadow-lg {
-  box-shadow: none !important;
-}
+  .btn-primary {
+    @apply bg-slate-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-slate-800 transition-all active:scale-95 flex items-center gap-2;
+  }
 
-* {
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  .btn-secondary {
+    @apply bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 transition-all active:scale-95 flex items-center gap-2 shadow-sm;
+  }
+
+  .input-field {
+    @apply w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all;
+  }
+
+  .table-header {
+    @apply px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider bg-slate-50/50 border-b border-slate-200/60;
+  }
+
+  .table-cell {
+    @apply px-6 py-4 text-sm text-slate-600 border-b border-slate-100/60;
+  }
+
+  .status-pill {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border;
+  }
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #cbd5e1;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f3f;
-}
-
-/* Custom classes for the new theme */
-.card-flat {
-  @apply bg-white border border-dark-border rounded-2xl;
-}
-
-.input-flat {
-  @apply bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-neutral-900 focus:border-accent-yellow outline-none transition-colors;
+  background: #94a3b8;
 }
